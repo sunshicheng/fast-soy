@@ -64,3 +64,5 @@ migrations/
 /web/packages/ofetch/node_modules/*
 /web/packages/utils/node_modules/*
 /web/.pnpm-store/*
+
+temp/
