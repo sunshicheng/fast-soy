@@ -34,6 +34,8 @@ declare module "@elegant-router/types" {
     "404": "/404";
     "500": "/500";
     "about": "/about";
+    "agent": "/agent";
+    "agent_config": "/agent/config";
     "alova": "/alova";
     "alova_request": "/alova/request";
     "alova_scenes": "/alova/scenes";
@@ -52,6 +54,7 @@ declare module "@elegant-router/types" {
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "manage": "/manage";
+    "manage_agent": "/manage/agent";
     "manage_api": "/manage/api";
     "manage_log": "/manage/log";
     "manage_menu": "/manage/menu";
@@ -137,6 +140,7 @@ declare module "@elegant-router/types" {
     | "404"
     | "500"
     | "about"
+    | "agent"
     | "alova"
     | "function"
     | "home"
@@ -170,6 +174,7 @@ declare module "@elegant-router/types" {
     | "iframe-page"
     | "login"
     | "about"
+    | "agent_config"
     | "alova_request"
     | "alova_scenes"
     | "alova_user"
@@ -182,6 +187,7 @@ declare module "@elegant-router/types" {
     | "function_tab"
     | "function_toggle-auth"
     | "home"
+    | "manage_agent"
     | "manage_api"
     | "manage_log"
     | "manage_menu"

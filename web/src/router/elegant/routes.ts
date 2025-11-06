@@ -51,6 +51,35 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'agent',
+    path: '/agent',
+    component: 'layout.base',
+    redirect: {
+      name: 'agent_config'
+    },
+    meta: {
+      title: 'agent',
+      i18nKey: 'route.agent',
+      icon: 'mdi:robot',
+      order: 6,
+      roles: ['R_ADMIN']
+    },
+    children: [
+      {
+        name: 'agent_config',
+        path: '/agent/config',
+        component: 'view.agent_config',
+        meta: {
+          title: 'agent_config',
+          i18nKey: 'route.agent_config',
+          icon: 'mdi:robot',
+          order: 1,
+          roles: ['R_ADMIN']
+        }
+      }
+    ]
+  },
+  {
     name: 'alova',
     path: '/alova',
     component: 'layout.base',
@@ -261,6 +290,15 @@ export const generatedRoutes: GeneratedRoute[] = [
       roles: ['R_ADMIN']
     },
     children: [
+      {
+        name: 'manage_agent',
+        path: '/manage/agent',
+        component: 'view.manage_agent',
+        meta: {
+          title: 'manage_agent',
+          i18nKey: 'route.manage_agent'
+        }
+      },
       {
         name: 'manage_api',
         path: '/manage/api',

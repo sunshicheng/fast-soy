@@ -250,7 +250,13 @@ declare namespace Api {
       | '1612'
       | '1613'
       | '1614'
-      | '1615';
+      | '1615'
+      | '1701'
+      | '1711'
+      | '1712'
+      | '1713'
+      | '1714'
+      | '1715';
 
     /** log */
     type Log = Common.CommonRecord<{
@@ -515,5 +521,44 @@ declare namespace Api {
       pId: number;
       children?: ButtonTree[];
     };
+
+    /**
+     * agent type
+     *
+     * - "business": 业务场景类Agent
+     * - "function": 功能类Agent
+     */
+    type AgentType = 'business' | 'function';
+
+    /** agent */
+    type Agent = Common.CommonRecord<{
+      /** agent name */
+      name: string;
+      /** agent type */
+      agentType: AgentType;
+      /** agent description */
+      description: string | null;
+      /** agent version */
+      version: string;
+      /** agent config */
+      config: Record<string, any> | null;
+    }>;
+
+    /** agent add params */
+    type AgentAddParams = Pick<
+      Api.SystemManage.Agent,
+      'name' | 'agentType' | 'description' | 'version' | 'config' | 'statusType'
+    >;
+
+    /** agent update params */
+    type AgentUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Agent, 'id'>> & AgentAddParams;
+
+    /** agent search params */
+    type AgentSearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Agent, 'name' | 'agentType' | 'statusType'> & CommonSearchParams
+    >;
+
+    /** agent list */
+    type AgentList = Common.PaginatingQueryRecord<Agent>;
   }
 }

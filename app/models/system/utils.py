@@ -162,6 +162,13 @@ class LogDetailType(str, Enum):
     UserDeleteOne = "1614"
     UserBatchDeleteOne = "1615"
 
+    AgentGetList = "1701"
+    AgentGetOne = "1711"
+    AgentCreateOne = "1712"
+    AgentUpdateOne = "1713"
+    AgentDeleteOne = "1714"
+    AgentBatchDeleteOne = "1715"
+
 
 class StatusType(str, Enum):
     all = "0"

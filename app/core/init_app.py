@@ -944,7 +944,7 @@ async def init_menus():
         route_name="manage_log",
         route_path="/manage/log",
         component="view.manage_log",
-        order=1,
+        order=5,
         i18n_key="route.manage_log",
         icon="material-symbols:list-alt-outline",
         icon_type=IconType.iconify,
@@ -965,7 +965,7 @@ async def init_menus():
         route_name="manage_api",
         route_path="/manage/api",
         component="view.manage_api",
-        order=2,
+        order=6,
         i18n_key="route.manage_api",
         icon="ant-design:api-outlined",
         icon_type=IconType.iconify,
@@ -987,7 +987,7 @@ async def init_menus():
             route_name="manage_user",
             route_path="/manage/user",
             component="view.manage_user",
-            order=3,
+            order=1,
             i18n_key="route.manage_user",
             icon="ic:round-manage-accounts",
             icon_type=IconType.iconify,
@@ -1000,7 +1000,7 @@ async def init_menus():
             route_name="manage_role",
             route_path="/manage/role",
             component="view.manage_role",
-            order=4,
+            order=2,
             i18n_key="route.manage_role",
             icon="carbon:user-role",
             icon_type=IconType.iconify,
@@ -1013,7 +1013,7 @@ async def init_menus():
             route_name="manage_menu",
             route_path="/manage/menu",
             component="view.manage_menu",
-            order=5,
+            order=3,
             i18n_key="route.manage_menu",
             icon="material-symbols:route",
             icon_type=IconType.iconify,
@@ -1026,12 +1026,42 @@ async def init_menus():
             route_name="manage_user-detail",
             route_path="/manage/user-detail/:id",
             component="view.manage_user-detail",
-            order=6,
+            order=7,
             i18n_key="route.manage_user-detail",
             hide_in_menu=True,
         ),
     ]
     await Menu.bulk_create(children_menu)
+    
+    # 创建 Agent 管理父菜单及其子菜单（顶级菜单，与系统管理同级）
+    agent_root_menu = await Menu.create(
+        status_type=StatusType.enable,
+        parent_id=0,
+        menu_type=MenuType.catalog,
+        menu_name="Agent 管理",
+        route_name="agent",
+        route_path="/agent",
+        component="layout.base",
+        order=6,
+        i18n_key="route.agent",
+        icon="mdi:robot",
+        icon_type=IconType.iconify,
+        redirect="/agent/config",
+    )
+    
+    agent_config_menu = await Menu.create(
+        status_type=StatusType.enable,
+        parent_id=agent_root_menu.id,
+        menu_type=MenuType.menu,
+        menu_name="Agent配置",
+        route_name="agent_config",
+        route_path="/agent/config",
+        component="view.manage_agent",
+        order=1,
+        i18n_key="route.agent_config",
+        icon="mdi:robot",
+        icon_type=IconType.iconify,
+    )
 
 
 async def insert_role(children_role: list[Role], role_apis: list[tuple[str, str]] = None, role_menus: list[str] = None, role_buttons: list[str] = None):
@@ -1097,8 +1127,14 @@ async def init_users():
             ("patch", "/api/v1/system-manage/users/{user_id}"),  # 修改用户
             ("delete", "/api/v1/system-manage/users/{user_id}"),  # 删除用户
             ("delete", "/api/v1/system-manage/users"),  # 批量删除用户
+            ("post", "/api/v1/system-manage/agents/all/"),  # Agent列表
+            ("get", "/api/v1/system-manage/agents/{agent_id}"),  # Agent详情
+            ("post", "/api/v1/system-manage/agents"),  # 新增Agent
+            ("patch", "/api/v1/system-manage/agents/{agent_id}"),  # 修改Agent
+            ("delete", "/api/v1/system-manage/agents/{agent_id}"),  # 删除Agent
+            ("delete", "/api/v1/system-manage/agents"),  # 批量删除Agent
         ]
-        role_admin_menus = ["home", "about", "function_toggle-auth", "manage_log", "manage_api", "manage_user"]
+        role_admin_menus = ["home", "about", "function_toggle-auth", "manage_log", "manage_api", "manage_user", "agent", "agent_config"]
         role_admin_buttons = ["B_CODE2", "B_CODE3"]
         await insert_role([role_admin], role_admin_apis, role_admin_menus, role_admin_buttons)
 
