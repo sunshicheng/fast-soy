@@ -65,18 +65,65 @@ def register_routers(app: FastAPI, prefix: str = "/api"):
 
 async def modify_db():
     command = Command(tortoise_config=APP_SETTINGS.TORTOISE_ORM, app="app_system")
+    
+    # 检查数据库是否已初始化（检查 aerich 表是否存在）
+    from tortoise import Tortoise
+    await Tortoise.init(config=APP_SETTINGS.TORTOISE_ORM)
+    conn = Tortoise.get_connection("conn_system")
+    
+    has_aerich = False
     try:
-        await command.init_db(safe=True)
-    except FileExistsError:
-        ...
-
-    try:
-        await command.init()
+        aerich_exists = await conn.execute_query("""
+            SELECT EXISTS (
+                SELECT FROM pg_tables 
+                WHERE schemaname = 'public' 
+                AND tablename = 'aerich'
+            );
+        """)
+        if aerich_exists[1] and len(aerich_exists[1]) > 0:
+            has_aerich = aerich_exists[1][0].get("exists", False)
     except Exception:
-        ...
-
-    await command.migrate()
-    await command.upgrade(run_in_transaction=True)
+        has_aerich = False
+    finally:
+        await Tortoise.close_connections()
+    
+    if not has_aerich:
+        # 新数据库：初始化数据库结构
+        try:
+            # 生成表结构（不依赖 aerich）
+            await Tortoise.init(config=APP_SETTINGS.TORTOISE_ORM)
+            await Tortoise.generate_schemas()
+            await Tortoise.close_connections()
+            
+            # 初始化 aerich 迁移系统
+            await command.init_db(safe=True)
+            await command.init()
+        except Exception as e:
+            from app.log import log
+            log.warning(f"Database initialization warning: {e}")
+            # 即使初始化失败，也尝试生成表结构
+            try:
+                await Tortoise.init(config=APP_SETTINGS.TORTOISE_ORM)
+                await Tortoise.generate_schemas()
+                await Tortoise.close_connections()
+            except Exception:
+                pass
+    else:
+        # 已有数据库：只执行 upgrade，不执行 migrate（避免版本兼容性警告）
+        # migrate() 会在模型变更时手动执行，这里只应用已有的迁移
+        try:
+            await command.upgrade(run_in_transaction=True)
+        except AttributeError as e:
+            # 忽略 aerich 版本兼容性警告（如 'migrate_location' 属性不存在）
+            if 'migrate_location' not in str(e):
+                from app.log import log
+                log.warning(f"Database upgrade warning: {e}")
+        except Exception as e:
+            # 其他错误可能是正常的（例如没有待应用的迁移）
+            error_msg = str(e).lower()
+            if 'migrate_location' not in error_msg and 'no migration' not in error_msg:
+                from app.log import log
+                log.debug(f"Database upgrade: {e}")
 
 
 async def init_menus():

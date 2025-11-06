@@ -9,8 +9,14 @@ def tortoise_orm_factory() -> dict[str, Any]:
     return {
         "connections": {
             "conn_system": {
-                "engine": "tortoise.backends.sqlite",
-                "credentials": {"file_path": "app_system.sqlite3"}
+                "engine": "tortoise.backends.asyncpg",
+                "credentials": {
+                    "host": "localhost",
+                    "port": "5432",
+                    "user": "fast_user",
+                    "password": "fast_admin_password",
+                    "database": "fast_admin",
+                }
             }
         },
         "apps": {
@@ -45,7 +51,34 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 12  # 12 hours
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
-    TORTOISE_ORM: dict[str, Any] = Field(default_factory=tortoise_orm_factory)
+    # PostgreSQL 数据库配置
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 5432
+    DB_USER: str = "fast_user"
+    DB_PASSWORD: str = "fast_admin_password"
+    DB_NAME: str = "fast_admin"
+
+    @property
+    def TORTOISE_ORM(self) -> dict[str, Any]:
+        return {
+            "connections": {
+                "conn_system": {
+                    "engine": "tortoise.backends.asyncpg",
+                    "credentials": {
+                        "host": self.DB_HOST,
+                        "port": self.DB_PORT,
+                        "user": self.DB_USER,
+                        "password": self.DB_PASSWORD,
+                        "database": self.DB_NAME,
+                    }
+                }
+            },
+            "apps": {
+                "app_system": {"models": ["app.models.system", "aerich.models"], "default_connection": "conn_system"}
+            },
+            "use_tz": False,
+            "timezone": "Asia/Shanghai"
+        }
 
     DATETIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
 
