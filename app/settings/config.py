@@ -74,7 +74,7 @@ class Settings(BaseSettings):
                 }
             },
             "apps": {
-                "app_system": {"models": ["app.models.system", "aerich.models"], "default_connection": "conn_system"}
+                "app_system": {"models": ["app.models.system", "app.models.medical", "aerich.models"], "default_connection": "conn_system"}
             },
             "use_tz": False,
             "timezone": "Asia/Shanghai"

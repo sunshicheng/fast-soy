@@ -370,6 +370,48 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'medic',
+    path: '/medic',
+    component: 'layout.base$view.medic',
+    meta: {
+      title: 'medic',
+      i18nKey: 'route.medic'
+    }
+  },
+  {
+    name: 'medical',
+    path: '/medical',
+    component: 'layout.base',
+    meta: {
+      title: 'medical',
+      i18nKey: 'route.medical',
+      icon: 'mdi:hospital-box',
+      order: 8
+    },
+    children: [
+      {
+        name: 'medical_disease-list',
+        path: '/medical/disease-list',
+        component: 'view.medical_disease-list',
+        meta: {
+          title: 'medical_disease-list',
+          i18nKey: 'route.medical_disease-list',
+          icon: 'mdi:virus'
+        }
+      },
+      {
+        name: 'medical_execution-detail',
+        path: '/medical/execution-detail/:id',
+        component: 'view.medical_execution-detail',
+        meta: {
+          title: 'medical_execution-detail',
+          i18nKey: 'route.medical_execution-detail',
+          hideInMenu: true
+        }
+      }
+    ]
+  },
+  {
     name: 'multi-menu',
     path: '/multi-menu',
     component: 'layout.base',

@@ -28,6 +28,11 @@ class Agent(BaseModel, TimestampMixin):
     status_type = fields.CharEnumField(enum_type=StatusType, default=StatusType.enable, description="状态")
     version = fields.CharField(max_length=50, default="1.0.0", description="版本号")
     config = fields.JSONField(null=True, description="Agent配置（JSON格式）")
+    
+    # LangChain相关配置
+    langchain_config = fields.JSONField(null=True, description="LangChain配置（模型、温度等）")
+    prompt_template = fields.TextField(null=True, description="提示词模板")
+    tools = fields.JSONField(null=True, description="可用工具列表")
 
     class Meta:
         table = "agents"

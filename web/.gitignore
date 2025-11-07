@@ -35,3 +35,5 @@ yarn.lock
 .VSCodeCounter
 dist.zip
 .env.test
+
+.temp
